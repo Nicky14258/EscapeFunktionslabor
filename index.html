@@ -317,12 +317,12 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10
     },
     {
       title: 'Der Rückwärts-Code', letter: 'I', short: 'Rückwärts',
-      intro: '<p>Jetzt läuft alles rückwärts. Ihr seht den fertigen Graphen G_k und sollt den Term finden.</p><p>Der Graph G_k entsteht aus G_f. Sein Term hat die Form <span class="fn">k(x) = b · f(x − a) + c</span>. Bestimmt a, b und c.</p>',
+      intro: '<p>Jetzt läuft alles rückwärts. Ihr seht den fertigen Graphen G_k und sollt den Term finden.</p><p>Der Graph G_k entsteht aus G_f. Sein Term hat die Form <span class="fn">k(x) = a · f(x − c) + d</span>. Bestimmt a, c und d.</p><p class="note">a: Streckung in y-Richtung · c: Verschiebung in x-Richtung · d: Verschiebung in y-Richtung</p>',
       graph: graphBox(graphK, 'G_f gestrichelt, G_k durchgezogen'),
       qs: [
-        { l: 'a =', a: 1 },
-        { l: 'b =', a: 2 },
-        { l: 'c =', a: 0 }
+        { l: 'a (Streckung in y-Richtung) =', a: 2 },
+        { l: 'c (Verschiebung in x-Richtung) =', a: 1 },
+        { l: 'd (Verschiebung in y-Richtung) =', a: 0 }
       ],
       hints: [
         'Vergleicht die x-Koordinaten der Eckpunkte von G_f und G_k. Um wie viel sind sie verschoben?',
