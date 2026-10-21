@@ -149,21 +149,21 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 
   var STATIONS=[
     { title:'Der Bodenspiegel', letter:'T', part:'a',
-      intro:'<p>Ihr steht im ersten Raum. Der Spiegel liegt flach auf dem Boden, genau auf der x-Achse.</p><p>G<sub>f</sub> wird zuerst <span class="mark">an der x-Achse gespiegelt</span> und anschließend <span class="mark">um −2 in x-Richtung verschoben</span>. Skizziert G<sub>g</sub> in euer Heft.</p>',
+      intro:'<p>Ihr steht im ersten Raum. Der Spiegel liegt flach auf dem Boden, genau auf der x-Achse.</p><p>G<sub>f</sub> wird zuerst <span class="mark">an der x-Achse gespiegelt</span> und anschließend <span class="mark">um −2 in x-Richtung verschoben</span>. Notiert die Zwischenterme und skizziert G<sub>g</sub> auf eurem Arbeitsblatt.</p>',
       term:['bitte wählen','g(x) = −1/x − 1','g(x) = −1/x + 1','g(x) = −1/(x − 4) − 1','g(x) = 1/(x + 2) − 1'], termA:'g(x) = −1/x − 1',
       va:0, ha:-1, g:{a:-1,h:0,k:-1},
       hints:['Spiegeln an der x-Achse heißt: der ganze Term wird mit (−1) multipliziert. Aus f(x) = 1/(x − 2) + 1 wird −1/(x − 2) − 1.',
              '„Um −2 in x-Richtung“ heißt: 2 nach links. Dafür wird x durch (x + 2) ersetzt.',
              'Die Asymptoten wandern mit: Die senkrechte x = 2 rückt 2 nach links, die waagrechte y = 1 wird durch das Spiegeln zu y = −1.'] },
     { title:'Die Spiegelwand', letter:'O', part:'b',
-      intro:'<p>Der zweite Raum: Der Spiegel steht jetzt senkrecht, genau auf der y-Achse.</p><p>G<sub>f</sub> wird zuerst <span class="mark">an der y-Achse gespiegelt</span> und anschließend <span class="mark">um 2 in x-Richtung verschoben</span>. Skizziert G<sub>g</sub> in euer Heft.</p>',
+      intro:'<p>Der zweite Raum: Der Spiegel steht jetzt senkrecht, genau auf der y-Achse.</p><p>G<sub>f</sub> wird zuerst <span class="mark">an der y-Achse gespiegelt</span> und anschließend <span class="mark">um 2 in x-Richtung verschoben</span>. Notiert die Zwischenterme und skizziert G<sub>g</sub> auf eurem Arbeitsblatt.</p>',
       term:['bitte wählen','g(x) = −1/(x + 4) + 1','g(x) = −1/x + 1','g(x) = 1/x + 1','g(x) = −1/x − 1'], termA:'g(x) = −1/x + 1',
       va:0, ha:1, g:{a:-1,h:0,k:1},
       hints:['Spiegeln an der y-Achse heißt: x wird durch (−x) ersetzt. Aus f(x) wird f(−x) = 1/(−x − 2) + 1.',
              'Um 2 nach rechts: Ersetzt jetzt jedes x durch (x − 2). Ihr erhaltet 1/(−(x − 2) − 2) + 1. Vereinfacht den Nenner.',
              'Der Nenner wird zu −x. Die senkrechte Asymptote x = 2 wird erst zu x = −2 gespiegelt und dann um 2 nach rechts geschoben. Die waagrechte Asymptote ändert sich nicht.'] },
     { title:'Der Zerrspiegel', letter:'R', part:'c',
-      intro:'<p>Der letzte Raum hat einen Zerrspiegel. Hier zählt die Reihenfolge!</p><p>G<sub>f</sub> wird zuerst <span class="mark">an der x-Achse gespiegelt</span>, <span class="mark">mit dem Faktor 2 in x-Richtung gestreckt</span> und anschließend <span class="mark">um −3 in x-Richtung verschoben</span>. Skizziert G<sub>g</sub> in euer Heft.</p>',
+      intro:'<p>Der letzte Raum hat einen Zerrspiegel. Hier zählt die Reihenfolge!</p><p>G<sub>f</sub> wird zuerst <span class="mark">an der x-Achse gespiegelt</span>, <span class="mark">mit dem Faktor 2 in x-Richtung gestreckt</span> und anschließend <span class="mark">um −3 in x-Richtung verschoben</span>. Notiert die Zwischenterme und skizziert G<sub>g</sub> auf eurem Arbeitsblatt.</p>',
       term:['bitte wählen','g(x) = −2/(x − 7) − 1','g(x) = −1/(2x + 4) − 1','g(x) = −2/(x − 1) − 1','g(x) = −2/(x − 1) + 1'], termA:'g(x) = −2/(x − 1) − 1',
       va:1, ha:-1, g:{a:-2,h:1,k:-1},
       hints:['Erst spiegeln und strecken: −f(½x) = −1/(½x − 2) − 1. Bei der Streckung mit Faktor 2 in x-Richtung steht im Argument ½x.',
@@ -197,7 +197,7 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
       '<p>Drei Räume, drei Spiegel, drei Schlösser. In jedem Raum wird der Graph von <span class="fn">f: x ↦ 1/(x − 2) + 1</span> anders gespiegelt. Wer den neuen Funktionsterm und seine Asymptoten findet, öffnet das Schloss.</p>'+
       '<p>Jedes Schloss gibt einen Buchstaben frei. Zusammen zeigen sie euch den Weg nach draußen.</p></div>'+
       graphF+
-      '<div class="task"><h3>Regeln</h3><p>Skizziert G<sub>f</sub> und G<sub>g</sub> zuerst im Heft, dann gebt ihr den Code ein. Ihr dürft beliebig oft prüfen. Jeder Tipp kostet eine Minute Strafzeit.</p></div>'+
+      '<div class="task"><h3>Regeln</h3><p>Bearbeitet jede Teilaufgabe zuerst auf eurem Arbeitsblatt: Zwischenterme notieren, G<sub>g</sub> skizzieren, Asymptoten eintragen. Dann gebt ihr den Code ein. Ihr dürft beliebig oft prüfen. Jeder Tipp kostet eine Minute Strafzeit.</p></div>'+
       '<div class="actions"><button class="btn-main" id="startBtn" type="button">Spiegelsaal betreten</button></div></section>';
     document.getElementById('startBtn').addEventListener('click',function(){
       state.started=Date.now(); state.station=0; save(); render(); tick();
@@ -231,7 +231,7 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
     if(t===s.term[0]||!a.trim()||!b.trim()){fb.className='feedback bad';fb.textContent='Füllt zuerst alle drei Felder aus.';return;}
     var right=(t===s.termA?1:0)+(parseNum(a)===s.va?1:0)+(parseNum(b)===s.ha?1:0);
     if(right===3){unlock();return;}
-    fb.className='feedback bad'; fb.textContent='Das Schloss bleibt zu. '+right+' von 3 Angaben stimmen. Kontrolliert eure Skizze im Heft.';
+    fb.className='feedback bad'; fb.textContent='Das Schloss bleibt zu. '+right+' von 3 Angaben stimmen. Kontrolliert eure Rechnung auf dem Arbeitsblatt.';
     card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
   }
   function unlock(){
@@ -239,7 +239,7 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
     var gC={a:s.g.a,h:s.g.h,k:s.g.k,color:'--graph-g',name:'G_g',lx:s.g.h+0.4,ly:s.g.k-(s.g.a<0?-2.2:2.6)};
     view.innerHTML='<section class="card pop"><div class="task"><span class="eyebrow">Raum '+(i+1)+' geknackt</span><h2>Schloss offen!</h2>'+
       '<p>Euer Buchstabe:</p><div class="letter">'+s.letter+'</div>'+
-      '<p><span class="mark">Vergleicht: Sieht eure Skizze im Heft so aus?</span></p></div>'+
+      '<p><span class="mark">Vergleicht: Sieht eure Skizze auf dem Arbeitsblatt so aus?</span></p></div>'+
       plot([fCurve,gC],'G_f (blau) und G_g mit ihren Asymptoten')+
       '<div class="actions"><button class="btn-main" id="next" type="button">'+(last?'Zum Ausgang':'Weiter in Raum '+(i+2))+'</button></div></section>';
     state.station=i+1; if(last)state.finished=Date.now();
