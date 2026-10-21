@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Escape Room Spiegelsaal</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: Karopapier-Heft wie im Funktionslabor, eine Station als Tresorkarte, Schlösser oben */
+:root{
+  --paper:#f6f8fb; --grid:#dfe7f0; --card:#ffffff; --ink:#1a2847; --muted:#5a6a86; --line:#c9d5e3;
+  --accent:#2443b0; --accent-ink:#ffffff; --marker:#fde65a; --marker-ink:#1a2847;
+  --ok:#1d7f55; --ok-soft:#e1f3ea; --bad:#b8400e; --bad-soft:#fbe8de;
+  --graph-f:#2a8fbf; --graph-g:#c2185b;
+  --font-display:"Bricolage Grotesque","Avenir Next","Segoe UI",sans-serif;
+  --font-body:"Atkinson Hyperlegible","Segoe UI",Verdana,sans-serif;
+  --font-code:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0e1422; --grid:#18223a; --card:#151e31; --ink:#e5ebf6; --muted:#9aa8c2; --line:#2a3756;
+  --accent:#8ea6ff; --accent-ink:#0e1422; --marker:#5a4c10; --marker-ink:#fff3b0;
+  --ok:#5ed39c; --ok-soft:#12301f; --bad:#ff9a6b; --bad-soft:#3a1d10; --graph-f:#6cc3ea; --graph-g:#ff7fb0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0e1422; --grid:#18223a; --card:#151e31; --ink:#e5ebf6; --muted:#9aa8c2; --line:#2a3756;
+  --accent:#8ea6ff; --accent-ink:#0e1422; --marker:#5a4c10; --marker-ink:#fff3b0;
+  --ok:#5ed39c; --ok-soft:#12301f; --bad:#ff9a6b; --bad-soft:#3a1d10; --graph-f:#6cc3ea; --graph-g:#ff7fb0; color-scheme:dark}
+*{box-sizing:border-box}
+body{background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px;color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(1.9rem,5vw,2.7rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.5rem;font-weight:800} h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+.mark{background:var(--marker);color:var(--marker-ink);padding:0 .25em;border-radius:2px}
+.eyebrow{font-family:var(--font-code);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.status{display:flex;gap:10px;flex-wrap:wrap}
+.pill{font-family:var(--font-code);font-size:.9rem;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-variant-numeric:tabular-nums}
+.locks{display:flex;gap:8px}
+.lock{width:38px;height:44px;display:grid;place-items:center;border-radius:8px;border:2px solid var(--line);background:var(--card);font-family:var(--font-code);font-weight:700;color:var(--muted)}
+.lock.current{border-color:var(--accent);color:var(--accent)}
+.lock.open{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:16px;box-shadow:0 2px 0 var(--line)}
+.task{display:grid;gap:10px}
+.fn{font-family:var(--font-code);font-weight:700;white-space:nowrap}
+.graph{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:8px;margin:0}
+.graph svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.graph figcaption{text-align:center;color:var(--muted);font-size:.92rem}
+.qs{display:grid;gap:10px}
+.q{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.q label{min-width:0}
+.q input,.q select{font-family:var(--font-code);font-size:1.02rem;width:100%;padding:8px 10px;border-radius:8px;border:2px solid var(--line);background:var(--paper);color:var(--ink);text-align:center}
+.q input:focus,.q select:focus{outline:none;border-color:var(--accent)}
+.prefix{display:flex;align-items:center;gap:6px;font-family:var(--font-code);font-weight:700}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button{font:700 1rem var(--font-body);border-radius:10px;padding:11px 18px;cursor:pointer;border:2px solid var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+button:disabled{opacity:.5;cursor:default}
+.btn-main{background:var(--accent);color:var(--accent-ink)}
+.btn-ghost{background:transparent;color:var(--accent)}
+.btn-small{padding:6px 12px;font-size:.9rem}
+.feedback{padding:12px 14px;border-radius:10px;font-weight:700}
+.feedback.bad{background:var(--bad-soft);color:var(--bad)}
+.hints{display:grid;gap:8px}
+.hint{border-left:4px solid var(--marker);background:var(--paper);padding:8px 12px;border-radius:0 8px 8px 0}
+.hint b{font-family:var(--font-code);font-size:.85rem}
+.letter{font-family:var(--font-code);font-size:2rem;font-weight:700;color:var(--ok)}
+.word{display:flex;gap:8px}
+.word span{width:48px;height:58px;display:grid;place-items:center;border:2px solid var(--ok);border-radius:8px;font:700 1.7rem var(--font-code);color:var(--ok);background:var(--ok-soft)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--paper)}
+.stat strong{display:block;font-family:var(--font-display);font-size:1.3rem;font-variant-numeric:tabular-nums}
+.note{color:var(--muted);font-size:.95rem}
+.field{display:grid;gap:6px}
+.field input{font-size:1.1rem;padding:10px 12px;border-radius:8px;border:2px solid var(--line);background:var(--paper);color:var(--ink);font-family:var(--font-body)}
+.confirm{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.g-grid{stroke:var(--grid);stroke-width:1}
+.g-axis{stroke:var(--muted);stroke-width:1.4}
+.g-label{fill:var(--muted);font:11px var(--font-code)}
+.g-asym{stroke-width:1.6;stroke-dasharray:6 5;fill:none}
+.g-name{font:700 13px var(--font-body)}
+@media (max-width:540px){.q{grid-template-columns:1fr}.card{padding:16px}}
+@media (prefers-reduced-motion:no-preference){
+  .pop{animation:pop .45s ease-out}@keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+  .shake{animation:shake .35s}@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Mathematik 11 · Buch S. 25, Aufgabe 4</div>
+      <h1>Der Spiegelsaal</h1>
+    </div>
+    <div class="status" id="status" hidden>
+      <span class="pill" id="timePill">00:00</span>
+    </div>
+  </header>
+  <div class="locks" id="locks" aria-label="Fortschritt"></div>
+  <main id="view"></main>
+  <footer>
+    <span class="note">Jeder Tipp kostet 1 Minute Strafzeit.</span>
+    <div id="resetArea"></div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var M = "−";
+  // f(x) = 1/(x-2) + 1
+  function hyper(a, h, k){ return function(x){ return a/(x-h)+k; }; }
+  var F = {a:1,h:2,k:1};
+
+  function plot(curves, caption){
+    var xmin=-6,xmax=6,ymin=-5,ymax=5,u=28,pad=16;
+    var W=(xmax-xmin)*u+pad*2,H=(ymax-ymin)*u+pad*2;
+    var X=function(x){return pad+(x-xmin)*u;}, Y=function(y){return pad+(ymax-y)*u;};
+    var s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" role="img" aria-label="Koordinatensystem" xmlns="http://www.w3.org/2000/svg">';
+    s+='<defs><clipPath id="clp"><rect x="'+X(xmin)+'" y="'+Y(ymax)+'" width="'+(xmax-xmin)*u+'" height="'+(ymax-ymin)*u+'"/></clipPath></defs>';
+    for(var x=xmin;x<=xmax;x++) s+='<line class="g-grid" x1="'+X(x)+'" y1="'+Y(ymin)+'" x2="'+X(x)+'" y2="'+Y(ymax)+'"/>';
+    for(var y=ymin;y<=ymax;y++) s+='<line class="g-grid" x1="'+X(xmin)+'" y1="'+Y(y)+'" x2="'+X(xmax)+'" y2="'+Y(y)+'"/>';
+    s+='<line class="g-axis" x1="'+X(xmin)+'" y1="'+Y(0)+'" x2="'+X(xmax)+'" y2="'+Y(0)+'"/>';
+    s+='<line class="g-axis" x1="'+X(0)+'" y1="'+Y(ymin)+'" x2="'+X(0)+'" y2="'+Y(ymax)+'"/>';
+    for(x=xmin+1;x<xmax;x++) if(x) s+='<text class="g-label" x="'+X(x)+'" y="'+(Y(0)+14)+'" text-anchor="middle">'+String(x).replace("-",M)+'</text>';
+    for(y=ymin+1;y<ymax;y++) if(y) s+='<text class="g-label" x="'+(X(0)-6)+'" y="'+(Y(y)+4)+'" text-anchor="end">'+String(y).replace("-",M)+'</text>';
+    s+='<text class="g-label" x="'+(X(xmax)-4)+'" y="'+(Y(0)-6)+'" text-anchor="end">x</text><text class="g-label" x="'+(X(0)+6)+'" y="'+(Y(ymax)+10)+'">y</text>';
+    curves.forEach(function(c){
+      var col='var('+c.color+')';
+      s+='<g clip-path="url(#clp)">';
+      s+='<line class="g-asym" style="stroke:'+col+'" x1="'+X(c.h)+'" y1="'+Y(ymin)+'" x2="'+X(c.h)+'" y2="'+Y(ymax)+'"/>';
+      s+='<line class="g-asym" style="stroke:'+col+'" x1="'+X(xmin)+'" y1="'+Y(c.k)+'" x2="'+X(xmax)+'" y2="'+Y(c.k)+'"/>';
+      var fn=hyper(c.a,c.h,c.k);
+      [[xmin,c.h-0.02],[c.h+0.02,xmax]].forEach(function(r){
+        var d="",first=true;
+        for(var t=r[0];t<=r[1]+1e-9;t+=0.02){var v=fn(t); if(v>ymax+3||v<ymin-3){first=true;continue;} d+=(first?"M":"L")+X(t).toFixed(1)+" "+Y(v).toFixed(1); first=false;}
+        s+='<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.8" stroke-linejoin="round"/>';
+      });
+      s+='</g><text class="g-name" style="fill:'+col+'" x="'+X(c.lx)+'" y="'+Y(c.ly)+'">'+c.name+'</text>';
+    });
+    return '<figure class="graph">'+s+'</svg>'+(caption?'<figcaption>'+caption+'</figcaption>':'')+'</figure>';
+  }
+  var fCurve={a:1,h:2,k:1,color:'--graph-f',name:'G_f',lx:3.2,ly:3.2};
+  var graphF=plot([fCurve],'G_f mit den Asymptoten x = 2 und y = 1 (gestrichelt)');
+
+  var STATIONS=[
+    { title:'Der Bodenspiegel', letter:'T', part:'a',
+      intro:'<p>Ihr steht im ersten Raum. Der Spiegel liegt flach auf dem Boden, genau auf der x-Achse.</p><p>G<sub>f</sub> wird zuerst <span class="mark">an der x-Achse gespiegelt</span> und anschließend <span class="mark">um −2 in x-Richtung verschoben</span>. Skizziert G<sub>g</sub> in euer Heft.</p>',
+      term:['bitte wählen','g(x) = −1/x − 1','g(x) = −1/x + 1','g(x) = −1/(x − 4) − 1','g(x) = 1/(x + 2) − 1'], termA:'g(x) = −1/x − 1',
+      va:0, ha:-1, g:{a:-1,h:0,k:-1},
+      hints:['Spiegeln an der x-Achse heißt: der ganze Term wird mit (−1) multipliziert. Aus f(x) = 1/(x − 2) + 1 wird −1/(x − 2) − 1.',
+             '„Um −2 in x-Richtung“ heißt: 2 nach links. Dafür wird x durch (x + 2) ersetzt.',
+             'Die Asymptoten wandern mit: Die senkrechte x = 2 rückt 2 nach links, die waagrechte y = 1 wird durch das Spiegeln zu y = −1.'] },
+    { title:'Die Spiegelwand', letter:'O', part:'b',
+      intro:'<p>Der zweite Raum: Der Spiegel steht jetzt senkrecht, genau auf der y-Achse.</p><p>G<sub>f</sub> wird zuerst <span class="mark">an der y-Achse gespiegelt</span> und anschließend <span class="mark">um 2 in x-Richtung verschoben</span>. Skizziert G<sub>g</sub> in euer Heft.</p>',
+      term:['bitte wählen','g(x) = −1/(x + 4) + 1','g(x) = −1/x + 1','g(x) = 1/x + 1','g(x) = −1/x − 1'], termA:'g(x) = −1/x + 1',
+      va:0, ha:1, g:{a:-1,h:0,k:1},
+      hints:['Spiegeln an der y-Achse heißt: x wird durch (−x) ersetzt. Aus f(x) wird f(−x) = 1/(−x − 2) + 1.',
+             'Um 2 nach rechts: Ersetzt jetzt jedes x durch (x − 2). Ihr erhaltet 1/(−(x − 2) − 2) + 1. Vereinfacht den Nenner.',
+             'Der Nenner wird zu −x. Die senkrechte Asymptote x = 2 wird erst zu x = −2 gespiegelt und dann um 2 nach rechts geschoben. Die waagrechte Asymptote ändert sich nicht.'] },
+    { title:'Der Zerrspiegel', letter:'R', part:'c',
+      intro:'<p>Der letzte Raum hat einen Zerrspiegel. Hier zählt die Reihenfolge!</p><p>G<sub>f</sub> wird zuerst <span class="mark">an der x-Achse gespiegelt</span>, <span class="mark">mit dem Faktor 2 in x-Richtung gestreckt</span> und anschließend <span class="mark">um −3 in x-Richtung verschoben</span>. Skizziert G<sub>g</sub> in euer Heft.</p>',
+      term:['bitte wählen','g(x) = −2/(x − 7) − 1','g(x) = −1/(2x + 4) − 1','g(x) = −2/(x − 1) − 1','g(x) = −2/(x − 1) + 1'], termA:'g(x) = −2/(x − 1) − 1',
+      va:1, ha:-1, g:{a:-2,h:1,k:-1},
+      hints:['Erst spiegeln und strecken: −f(½x) = −1/(½x − 2) − 1. Bei der Streckung mit Faktor 2 in x-Richtung steht im Argument ½x.',
+             'Dann um 3 nach links: Ersetzt x durch (x + 3). Ihr erhaltet −1/(½(x + 3) − 2) − 1. Fasst den Nenner zusammen: ½x + 1,5 − 2.',
+             'Der Nenner ist ½x − ½ = ½(x − 1), und 1/(½(x − 1)) = 2/(x − 1). Die senkrechte Asymptote: x = 2 wird durch die Streckung zu x = 4, dann 3 nach links.'] }
+  ];
+  var WORD=STATIONS.map(function(s){return s.letter;}).join('');
+
+  var KEY='spiegelsaal-v1';
+  function fresh(){return {group:'',started:0,station:-1,hintsUsed:{},penalty:0,finished:0,confirmReset:false};}
+  function load(){try{var r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  var state=load()||fresh();
+
+  function parseNum(s){s=String(s).trim().replace(/[−–]/g,'-').replace(/\s+/g,'').replace(',','.'); if(!/^-?\d+(?:\.\d+)?$/.test(s))return NaN; return parseFloat(s);}
+  function fmt(sec){sec=Math.max(0,Math.floor(sec));var m=Math.floor(sec/60),s=sec%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;}
+  function elapsed(){var end=state.finished||Date.now();return (end-state.started)/1000+state.penalty*60;}
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var view=document.getElementById('view');
+
+  function renderLocks(){
+    document.getElementById('locks').innerHTML=STATIONS.map(function(s,i){
+      var cls=(i<state.station||state.finished)?'open':(i===state.station?'current':'');
+      return '<div class="lock '+cls+'" title="Raum '+(i+1)+': '+esc(s.title)+'">'+(cls==='open'?s.letter:s.part)+'</div>';
+    }).join('');
+    document.getElementById('status').hidden=state.station<0;
+  }
+  function renderStart(){
+    view.innerHTML='<section class="card pop"><div class="task"><span class="eyebrow">Einsatzbesprechung</span>'+
+      '<h2>Ihr seid im Spiegelsaal eingeschlossen.</h2>'+
+      '<p>Drei Räume, drei Spiegel, drei Schlösser. In jedem Raum wird der Graph von <span class="fn">f: x ↦ 1/(x − 2) + 1</span> anders gespiegelt. Wer den neuen Funktionsterm und seine Asymptoten findet, öffnet das Schloss.</p>'+
+      '<p>Jedes Schloss gibt einen Buchstaben frei. Zusammen zeigen sie euch den Weg nach draußen.</p></div>'+
+      graphF+
+      '<div class="task"><h3>Regeln</h3><p>Skizziert G<sub>f</sub> und G<sub>g</sub> zuerst im Heft, dann gebt ihr den Code ein. Ihr dürft beliebig oft prüfen. Jeder Tipp kostet eine Minute Strafzeit.</p></div>'+
+      '<div class="actions"><button class="btn-main" id="startBtn" type="button">Spiegelsaal betreten</button></div></section>';
+    document.getElementById('startBtn').addEventListener('click',function(){
+      state.started=Date.now(); state.station=0; save(); render(); tick();
+    });
+  }
+  function renderStation(){
+    var i=state.station,s=STATIONS[i],used=state.hintsUsed[i]||0;
+    view.innerHTML='<section class="card pop" id="card"><div class="task"><span class="eyebrow">Raum '+(i+1)+' von 3 · Aufgabe 4'+s.part+'</span>'+
+      '<h2>'+s.title+'</h2>'+s.intro+'</div>'+graphF+
+      '<div class="qs">'+
+        '<div class="q"><label for="q0">Welcher Funktionsterm gehört zu G<sub>g</sub>?</label><select id="q0">'+s.term.map(function(o){return '<option>'+o+'</option>';}).join('')+'</select></div>'+
+        '<div class="q"><label for="q1">Senkrechte Asymptote von G<sub>g</sub></label><span class="prefix">x =<input id="q1" inputmode="decimal" autocomplete="off"></span></div>'+
+        '<div class="q"><label for="q2">Waagrechte Asymptote von G<sub>g</sub></label><span class="prefix">y =<input id="q2" inputmode="decimal" autocomplete="off"></span></div>'+
+      '</div><div id="fb" aria-live="polite"></div>'+
+      '<div class="actions"><button class="btn-main" id="check" type="button">Code prüfen</button>'+
+      '<button class="btn-ghost" id="hintBtn" type="button"'+(used>=s.hints.length?' disabled':'')+'>'+(used>=s.hints.length?'Keine Tipps mehr':'Tipp '+(used+1)+' anzeigen (+1 min)')+'</button></div>'+
+      '<div class="hints">'+s.hints.slice(0,used).map(function(h,k){return '<div class="hint"><b>Tipp '+(k+1)+'</b><br>'+h+'</div>';}).join('')+'</div></section>';
+    document.getElementById('check').addEventListener('click',check);
+    document.getElementById('hintBtn').addEventListener('click',function(){
+      if((state.hintsUsed[i]||0)>=s.hints.length)return;
+      var keep=[0,1,2].map(function(k){return document.getElementById('q'+k).value;});
+      state.hintsUsed[i]=(state.hintsUsed[i]||0)+1; state.penalty+=1; save(); renderStation(); tick();
+      keep.forEach(function(v,k){document.getElementById('q'+k).value=v;});
+    });
+    ['q1','q2'].forEach(function(id){document.getElementById(id).addEventListener('keydown',function(e){if(e.key==='Enter')check();});});
+  }
+  function check(){
+    var s=STATIONS[state.station];
+    var t=document.getElementById('q0').value, a=document.getElementById('q1').value, b=document.getElementById('q2').value;
+    var fb=document.getElementById('fb'), card=document.getElementById('card');
+    if(t===s.term[0]||!a.trim()||!b.trim()){fb.className='feedback bad';fb.textContent='Füllt zuerst alle drei Felder aus.';return;}
+    var right=(t===s.termA?1:0)+(parseNum(a)===s.va?1:0)+(parseNum(b)===s.ha?1:0);
+    if(right===3){unlock();return;}
+    fb.className='feedback bad'; fb.textContent='Das Schloss bleibt zu. '+right+' von 3 Angaben stimmen. Kontrolliert eure Skizze im Heft.';
+    card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+  }
+  function unlock(){
+    var i=state.station,s=STATIONS[i],last=i===STATIONS.length-1;
+    var gC={a:s.g.a,h:s.g.h,k:s.g.k,color:'--graph-g',name:'G_g',lx:s.g.h+0.4,ly:s.g.k-(s.g.a<0?-2.2:2.6)};
+    view.innerHTML='<section class="card pop"><div class="task"><span class="eyebrow">Raum '+(i+1)+' geknackt</span><h2>Schloss offen!</h2>'+
+      '<p>Euer Buchstabe:</p><div class="letter">'+s.letter+'</div>'+
+      '<p><span class="mark">Vergleicht: Sieht eure Skizze im Heft so aus?</span></p></div>'+
+      plot([fCurve,gC],'G_f (blau) und G_g mit ihren Asymptoten')+
+      '<div class="actions"><button class="btn-main" id="next" type="button">'+(last?'Zum Ausgang':'Weiter in Raum '+(i+2))+'</button></div></section>';
+    state.station=i+1; if(last)state.finished=Date.now();
+    save(); renderLocks(); tick();
+    document.getElementById('next').addEventListener('click',render);
+  }
+  function renderEnd(){
+    var hints=0; Object.keys(state.hintsUsed).forEach(function(k){hints+=state.hintsUsed[k];});
+    view.innerHTML='<section class="card pop"><div class="task"><span class="eyebrow">Ausgang erreicht</span><h2>Ihr seid frei!</h2>'+
+      '<p>Euer Lösungswort:</p><div class="word">'+WORD.split('').map(function(c){return '<span>'+c+'</span>';}).join('')+'</div></div>'+
+      '<div class="stats"><div class="stat"><strong>'+fmt(elapsed())+'</strong><span class="note">Gesamtzeit inkl. Strafzeit</span></div>'+
+      '<div class="stat"><strong>'+hints+'</strong><span class="note">Tipps genutzt</span></div></div>'+
+      '<div class="task"><h3>Zum Nachdenken, bis alle fertig sind</h3>'+
+      '<p>In Raum a und b ergibt sich fast derselbe Term. Woran liegt der einzige Unterschied?</p>'+
+      '<p class="note">Zeigt das Lösungswort und eure Zeit der Lehrkraft.</p></div></section>';
+  }
+  function render(){
+    renderLocks();
+    if(state.station<0)renderStart();
+    else if(state.finished&&state.station>=STATIONS.length)renderEnd();
+    else renderStation();
+    renderReset();
+  }
+  function renderReset(){
+    var area=document.getElementById('resetArea');
+    if(state.confirmReset){
+      area.innerHTML='<div class="confirm"><span class="note">Fortschritt wirklich löschen?</span><button class="btn-main btn-small" id="yesReset" type="button">Ja, neu starten</button><button class="btn-ghost btn-small" id="noReset" type="button">Abbrechen</button></div>';
+      document.getElementById('yesReset').onclick=function(){state=fresh();save();render();tick();};
+      document.getElementById('noReset').onclick=function(){state.confirmReset=false;renderReset();};
+    } else {
+      area.innerHTML='<button class="btn-ghost btn-small" id="resetBtn" type="button">Neu starten</button>';
+      document.getElementById('resetBtn').onclick=function(){state.confirmReset=true;renderReset();};
+    }
+  }
+  function tick(){ if(state.station>=0&&state.started) document.getElementById('timePill').textContent=fmt(elapsed()); }
+  setInterval(tick,1000);
+  state.confirmReset=false;
+  render(); tick();
+})();
+</script>
+
+</body>
+</html>
